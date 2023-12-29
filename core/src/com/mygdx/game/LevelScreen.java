@@ -14,6 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+// adding sound
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
+
 
 public class LevelScreen extends BaseScreen {
     private Turtle turtle;
@@ -23,6 +27,12 @@ public class LevelScreen extends BaseScreen {
     private Label starfishLabel;
     //adding signs
     private DialogBox dialogBox;
+
+    // adding music
+    private float audioVolume;
+    private Sound waterDrop;
+    private Music instrumental;
+    private Music oceanSurf;
 
     public void initialize() {
 //        ocean = new BaseActor(0, 0, mainStage);
@@ -82,19 +92,52 @@ public class LevelScreen extends BaseScreen {
 
         restartButton.addListener(
                 (Event e) -> {
-                    if (!(e instanceof InputEvent) ||
-                            !((InputEvent) e).getType().equals(Type.touchDown)) {
+                    // instead of the commented code, to free up memory we need to dispose of the sound being played each time we finish with a music object
+//                    if (!(e instanceof InputEvent) ||
+//                            !((InputEvent) e).getType().equals(Type.touchDown)) {
+//                        return false;
+//                    }
+                    if (!isTouchDownEvent(e)) {
                         return false;
                     }
+
+                    instrumental.dispose();
+                    oceanSurf.dispose();
 
                     StarfishGame.setActiveScreen(new LevelScreen());
                     return false;
                 }
         );
 
+        // for the mute and unmute audio button
+        ButtonStyle buttonStyle2 = new ButtonStyle();
+
+        Texture buttonTex2 = new Texture(Gdx.files.internal("audio.png"));
+        TextureRegion buttonRegion2 = new TextureRegion(buttonTex2);
+        buttonStyle2.up = new TextureRegionDrawable(buttonRegion2);
+
+        Button muteButton = new Button(buttonStyle2);
+        muteButton.setColor(Color.CYAN);
+
+        muteButton.addListener(
+                (Event e) -> {
+                    if (!isTouchDownEvent(e)) {
+                        return false;
+                    }
+
+                    audioVolume = 1 - audioVolume;
+                    instrumental.setVolume(audioVolume);
+                    oceanSurf.setVolume(audioVolume);
+
+                    return true;
+
+                }
+        );
+
         uiTable.pad(10);
         uiTable.add(starfishLabel).top();
         uiTable.add().expandX().expandY();
+        uiTable.add(muteButton).top();
         uiTable.add(restartButton).top();
 
         dialogBox = new DialogBox(0, 0, uiStage);
@@ -107,7 +150,22 @@ public class LevelScreen extends BaseScreen {
 
         uiTable.row();
         uiTable.add(dialogBox).colspan(3);
+//        uiTable.add(dialogBox).colspan(4);
 
+
+
+        // adding music
+        waterDrop = Gdx.audio.newSound(Gdx.files.internal("Water_Drop.ogg"));
+        instrumental = Gdx.audio.newMusic(Gdx.files.internal("Master_of_the_Feast.ogg"));
+        oceanSurf = Gdx.audio.newMusic(Gdx.files.internal("Ocean_Waves.ogg"));
+
+        audioVolume = 1.00f;
+        instrumental.setLooping(true);
+        instrumental.setVolume(audioVolume);
+        instrumental.play();
+        oceanSurf.setLooping(true);
+        oceanSurf.setVolume(audioVolume);
+        oceanSurf.play();
     }
 
     public void update(float dt) {
@@ -139,6 +197,7 @@ public class LevelScreen extends BaseScreen {
             Starfish starfish = (Starfish) starfishActor;
             if (turtle.overlaps(starfish) && !starfish.collected) {
                 starfish.collected = true;
+                waterDrop.play(audioVolume);
                 starfish.clearActions();
                 starfish.addAction(Actions.fadeOut(1));
                 starfish.addAction(Actions.after(Actions.removeActor()));

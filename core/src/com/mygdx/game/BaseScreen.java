@@ -8,6 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 
+// adding audio
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+
+
 public abstract class BaseScreen implements Screen, InputProcessor {
     protected Stage mainStage;
     protected Stage uiStage;
@@ -57,8 +63,8 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     }
 
     /**
-     *  Called when this becomes the active screen in a Game.
-     *  Set up InputMultiplexer here, in case screen is reactivated at a later time.
+     * Called when this becomes the active screen in a Game.
+     * Set up InputMultiplexer here, in case screen is reactivated at a later time.
      */
     public void show() {
         InputMultiplexer im = (InputMultiplexer) Gdx.input.getInputProcessor();
@@ -68,9 +74,9 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     }
 
     /**
-     *  Called when this is no longer the active screen in a Game.
-     *  Screen class and Stages no longer process input.
-     *  Other InputProcessors must be removed manually.
+     * Called when this is no longer the active screen in a Game.
+     * Screen class and Stages no longer process input.
+     * Other InputProcessors must be removed manually.
      */
     public void hide() {
         InputMultiplexer im = (InputMultiplexer) Gdx.input.getInputProcessor();
@@ -112,4 +118,9 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
+
+    public boolean isTouchDownEvent(Event e) {
+        return (e instanceof InputEvent) && ((InputEvent) e).getType().equals(Type.touchDown);
+    }
 }
+
