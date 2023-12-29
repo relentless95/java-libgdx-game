@@ -497,5 +497,16 @@ public class BaseActor extends Group {
 
     }
 
+    // to move the character during the cut scene
+
+    /**
+     * Get world dimensions
+     *
+     * @return Rectangle whose width/height represent world bounds
+     */
+    public static Rectangle getWorldBounds() {
+        return worldBounds;
+    }
+
 
 }
