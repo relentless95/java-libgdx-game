@@ -446,7 +446,7 @@ public class BaseActor extends Group {
 
     public void alignCamera() {
         Camera cam = this.getStage().getCamera();
-        Viewport v = this.getStage().getViewport();
+//        Viewport v = this.getStage().getViewport();
 
 
         // center camera on actor
@@ -455,6 +455,17 @@ public class BaseActor extends Group {
         //bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, cam.viewportWidth / 2, worldBounds.width - cam.viewportWidth / 2);
         cam.position.y = MathUtils.clamp(cam.position.y, cam.viewportHeight / 2, worldBounds.height - cam.viewportHeight / 2);
+
+        System.out.println("cam.position.x=" + cam.position.x + " cam.viewportWidth=" + cam.viewportWidth
+                + " worldBounds.width=" + worldBounds.width + " cam.viewportWidth/2=" + cam.viewportWidth/2 +
+                " min is :" + (cam.viewportWidth/2) + " max is :" + (worldBounds.width -cam.viewportWidth/2));
+
+        System.out.println("cam.position.y=" + cam.position.y+ " cam.viewportHeight=" + cam.viewportHeight
+                + " worldBounds.height=" + worldBounds.height+ "cam.viewportHeight/2= " + cam.viewportHeight/2 +
+                " min is :" + (cam.viewportHeight/2) + " max is :" + (worldBounds.height -cam.viewportHeight/2));
+
+        System.out.println();
+
         cam.update();
     }
 
