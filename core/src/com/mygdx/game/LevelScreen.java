@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -35,41 +37,72 @@ public class LevelScreen extends BaseScreen {
     private Music oceanSurf;
 
     public void initialize() {
-//        ocean = new BaseActor(0, 0, mainStage);
-//        ocean.loadTexture("water.jpg");
-//        ocean.setSize(800, 600);
+//        not use any more in chap 10
+/**        ocean = new BaseActor(0, 0, mainStage);
+ ocean.loadTexture("water.jpg");
+ ocean.setSize(800, 600);
 
-//        starfish = new Starfish(380, 380, mainStage);
+ starfish = new Starfish(380, 380, mainStage);
 
-        //using the list instead
-        BaseActor ocean = new BaseActor(0, 0, mainStage);
-        ocean.loadTexture("water-border.jpg");
-        ocean.setSize(1200, 900);
+ // not used anymore in chapter 10
+ //using the list instead
+ BaseActor ocean = new BaseActor(0, 0, mainStage);
 
-        BaseActor.setWorldBounds(ocean);
-//        turtle = new Turtle(20, 20, mainStage);
-//        rock = new Rock(200, 200, mainStage);
+ // not used anymore in chapter 10
+ ocean.loadTexture("water-border.jpg");
+ ocean.setSize(1200, 900);
+ BaseActor.setWorldBounds(ocean);
 
+ //        turtle = new Turtle(20, 20, mainStage);
+ //        rock = new Rock(200, 200, mainStage);
 
-        // the base actor class adds them to the stage
-        new Starfish(400, 400, mainStage);
-        new Starfish(500, 100, mainStage);
-        new Starfish(100, 450, mainStage);
-        new Starfish(200, 250, mainStage);
+ // not used anymore in chapter 10
+ // the base actor class adds them to the stage
+ new Starfish(400, 400, mainStage);
+ new Starfish(500, 100, mainStage);
+ new Starfish(100, 450, mainStage);
+ new Starfish(200, 250, mainStage);
 
-        new Rock(200, 150, mainStage);
-        new Rock(100, 300, mainStage);
-        new Rock(300, 350, mainStage);
-        new Rock(450, 200, mainStage);
+ new Rock(200, 150, mainStage);
+ new Rock(100, 300, mainStage);
+ new Rock(300, 350, mainStage);
+ new Rock(450, 200, mainStage);
 
-        turtle = new Turtle(20, 20, mainStage);
+ // not used anymore in chapter 10
+ turtle = new Turtle(20, 20, mainStage);
 
-        // adding the sign
-        Sign sign1 = new Sign(20, 400, mainStage);
-        sign1.setText("West Starfish Bay");
+ // not used anymore in chapter 10
+ // adding the sign
+ Sign sign1 = new Sign(20, 400, mainStage);
+ sign1.setText("West Starfish Bay");
 
-        Sign sign2 = new Sign(600, 300, mainStage);
-        sign2.setText("East Starfish Bay");
+ Sign sign2 = new Sign(600, 300, mainStage);
+ sign2.setText("East Starfish Bay");
+ **/
+
+        // we now use this in chapter 10;
+        // ---------
+        TiledmapActor tma = new TiledmapActor("map.tmx", mainStage);
+
+        for (MapObject obj : tma.getTileList("Starfish")) {
+            MapProperties props = obj.getProperties();
+            new Starfish((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
+        for (MapObject obj : tma.getTileList("Rock")) {
+            MapProperties props = obj.getProperties();
+            new Rock((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
+        for (MapObject obj : tma.getTileList("Sign")) {
+            MapProperties props = obj.getProperties();
+            Sign s = new Sign((float) props.get("x"), (float) props.get("y"), mainStage);
+            s.setText((String) props.get("message"));
+        }
+
+        MapObject startPoint = tma.getRectangleList("Start").get(0);
+        MapProperties props = startPoint.getProperties();
+        turtle = new Turtle((float) props.get("x"), (float) props.get("y"), mainStage);
 
         win = false;
 
@@ -151,7 +184,6 @@ public class LevelScreen extends BaseScreen {
         uiTable.row();
         uiTable.add(dialogBox).colspan(3);
 //        uiTable.add(dialogBox).colspan(4);
-
 
 
         // adding music
